@@ -27,4 +27,21 @@ $(function () {
     $chatMsg.val("");
     $chatMsg.focus();
   });
+
+  var addMessage = function (data) {
+    var text = "";
+    if (!isBlank(data.name)) {
+      text = `<strong>${data.name}</strong>`;
+    }
+    text += data.msg;
+    $chatLog.prepend(`<div><span>${text}</span></div>`);
+  };
+
+  // EventSource
+  var es = new EventSource("/stream");
+  es.onopen = function (e) {
+    $.post("/users", {
+      name: username,
+    });
+  };
 });
