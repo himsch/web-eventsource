@@ -31,7 +31,7 @@ $(function () {
   var addMessage = function (data) {
     var text = "";
     if (!isBlank(data.name)) {
-      text = `<strong>${data.name}</strong>`;
+      text = `<strong>${data.name}: </strong>`;
     }
     text += data.msg;
     $chatLog.prepend(`<div><span>${text}</span></div>`);
@@ -43,5 +43,17 @@ $(function () {
     $.post("/users", {
       name: username,
     });
+  };
+  es.onmessage = function (e) {
+    var msg = JSON.parse(e.data);
+    addMessage(msg);
+  };
+
+  window.onbeforeunload = function () {
+    $.ajax({
+      url: `/users?username=${username}`,
+      type: "DELETE",
+    });
+    es.close();
   };
 });
